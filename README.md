@@ -1,6 +1,6 @@
 # Server for projekt 9 sprint
 
-https://server.github.io
+https://verakhab.github.io/server.github.io/
 
 Version: v.1.0.0
 
