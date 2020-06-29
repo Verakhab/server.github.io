@@ -8,13 +8,15 @@ usersRouter.get('/users', (req, res) => {
 
 usersRouter.get('/users/:id', (req, res) => {
 
-  usersAll.find((item) => {
-    
-      if (item._id === req.params.id) {
-        return res.status(200).send(item);
-      } else {
-        return res.status(404).send({ "message": "Нет пользователя с таким id" });
-      }
+  usersAll.forEach((item) => {
+
+    if (item._id === req.params.id) {
+
+      return res.status(200).send(item);
+    } else {
+
+      res.status(404).send({ "message": "Нет пользователя с таким id" });
+    }
   });
 });
 
