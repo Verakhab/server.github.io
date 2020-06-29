@@ -10,7 +10,7 @@ usersRouter.get('/users/:id', (req, res) => {
 
   usersAll.find((item) => {
 
-    if (item.id === req.params.id) {
+    if (item._id === req.params.id) {
 
       return res.status(200).send(item);
     } else {
