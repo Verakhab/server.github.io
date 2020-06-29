@@ -2,11 +2,11 @@ const usersRouter = require('express').Router();
 const usersAll = require('../data/users');
 
 usersRouter.get('/users', (req, res) => {
-  res.send(usersAll);
+  res.status(200).send(usersAll);
 });
 
 usersRouter.get('/users/:id', (req, res) => {
-  usersAll.forEach((item) => {
+  usersAll.find((item) => {
     if (item._id === req.params.id) {
       return res.status(200).send(item);
     }
