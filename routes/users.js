@@ -1,23 +1,23 @@
 const usersRouter = require('express').Router();
-const userRouter = require('express').Router();
-const path = require('path');
 const usersAll = require('../data/users');
 
 usersRouter.get('/users', (req, res) => {
+
   res.send(usersAll);
 });
 
-userRouter.get('/users/:id', (req, res) => {
-  usersAll.forEach((item) => {
-    if (item._id === req.params.id) {
-      return res.status(200).send(item);
-    }
+usersRouter.get('/users/:id', (req, res) => {
 
-    res.status(404).send({ message: 'Нет пользователя с таким id' });
+  usersAll.find((item) => {
+
+    if (item.id === req.params.id) {
+
+      return res.status(200).send(item);
+    } else {
+
+      return res.status(404).send({ "message": "Нет пользователя с таким id" });
+    }
   });
 });
 
-module.exports = {
-  usersRouter,
-  userRouter,
-};
+module.exports = usersRouter;
