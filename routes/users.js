@@ -6,13 +6,11 @@ usersRouter.get('/users', (req, res) => {
 });
 
 usersRouter.get('/users/:id', (req, res) => {
-  usersAll.find((item) => {
-    if (item._id === req.params.id) {// eslint-disable-line
-      return res.status(200).send(item);
-    }
-
-    return res.status(404).send({ message: 'Нет пользователя с таким id' });
-  });
+  const userId = usersAll.find((item) => item._id === req.params.id);// eslint-disable-line
+  if (userId) {
+    return res.status(200).send(userId);
+  }
+  return res.status(404).send({ message: 'Нет пользователя с таким id' });
 });
 
 module.exports = usersRouter;
