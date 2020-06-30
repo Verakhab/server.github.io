@@ -7,7 +7,7 @@ usersRouter.get('/users', (req, res) => {
 
 usersRouter.get('/users/:id', (req, res) => {
   usersAll.find((item) => {
-    if (item._id === req.params.id) {
+    if (item._id === req.params.id) {// eslint-disable-line
       return res.status(200).send(item);
     }
 
