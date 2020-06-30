@@ -1,0 +1,10 @@
+@import url(./_edit/popup__close_edit.css);
+@import url(./_ava/popup__close_ava.css);
+
+.popup__close {
+  width: 26px;
+  position: absolute;
+  top: -26px;
+  right: -26px;
+  cursor: pointer;
+}

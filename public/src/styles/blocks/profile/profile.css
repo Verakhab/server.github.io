@@ -1,0 +1,6 @@
+.profile {
+  width: 64.2vw;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+}

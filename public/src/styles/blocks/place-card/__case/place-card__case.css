@@ -1,0 +1,8 @@
+.place-card__case {
+  width: 21px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin: 0 -3px 0 0;
+}
+

@@ -1,0 +1,16 @@
+.place-card__image.place-card__image_max {
+  min-height: 80vh;
+  min-width: 80vw;
+  position: fixed;
+  cursor: default;
+  background-size: cover;
+  background-position: center;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  content: none;
+  z-index: 1;
+}
+
+.place-card__image.place-card__image_max::after {
+  content: none;
+}

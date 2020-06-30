@@ -1,0 +1,35 @@
+.popup.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-always.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-length.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-always-job.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-length-job.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-title.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-link.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-title-link.popup_is-opened {
+  display: flex;
+}
+
+.popup__valid-length-link.popup_is-opened {
+  display: flex;
+}

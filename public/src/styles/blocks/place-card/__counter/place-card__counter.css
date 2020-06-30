@@ -1,0 +1,11 @@
+.place-card__counter {
+  background-color: transparent;
+  border: none;
+  width: 21px;
+  height: 19px;
+  cursor: pointer;
+  transition: transform .3s linear;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
