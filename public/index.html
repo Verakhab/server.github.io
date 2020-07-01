@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mesto</title>
+  <link rel="stylesheet" href="style.7fb12539beee2564fc9c.css">
+</head>
+<body>
+  <div class="root">
+    <header class="header root__section">
+      <img src="./images/logo.svg" alt="mesto logo" class="logo">
+    </header>
+    <div class="profile root__section">
+      <div class="user-info">
+        <div class="user-info__photo"></div>
+        <div class="user-info__data">
+          <h1 class="user-info__name">Jaques Causteau</h1>
+          <p class="user-info__job">Sacxfvor, Researcher</p>
+          <button class="button user-info__button user-info__button_edit-button">Edit</button>
+          <button class="button user-info__button user-info__button_info">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="places-list root__section">
+    </div>
+      <div class="popup popup_new">
+        <div class="popup__content">
+          <img src="./images/close.svg" alt="button close" class="popup__close">
+          <h3 class="popup__title">Новое место</h3>
+          <form class="popup__form" novalidate name="new">
+            <input
+              type="text"
+              required
+              minlength="2"
+              maxlength="30"
+              name="name"
+              class="popup__input popup__input_type_name"
+              placeholder="Название"
+            >
+            <span class="popup__new-error"></span>
+            <input
+              type="url"
+              required
+              name="link"
+              class="popup__input popup__input_type_link-url"
+              placeholder="Ссылка на картинку"
+            >
+            <span class="popup__new-error"></span>
+            <button type="submit" class="button popup__button" disabled = 'true'>+</button>
+          </form>
+        </div>
+      </div>
+    <div class="popup popup_edit">
+      <div class="popup__content popup__content_edit">
+        <img src="./images/close.svg" alt="button close" class="popup__close popup__close_edit">
+        <h3 class="popup__title popup__title_edit">Редактировать профиль</h3>
+        <form class="popup__form popup__form_edit" novalidate name="edit">
+          <input
+            type="text"
+            required
+            minlength="2"
+            maxlength="30"
+            name="nameuser"
+            class="popup__input popup__input_type_name popup__input-edit_nameuser"
+            placeholder="Имя"
+          >
+          <span class="popup__edit-error"></span>
+          <input
+            type="text"
+            required
+            minlength="2"
+            maxlength="30"
+            name="aboutuser"
+            class="popup__input popup__input_type_link-url popup__input-edit_aboutuser"
+            placeholder="О себе"
+          >
+          <span class="popup__edit-error"></span>
+          <button type="submit" class="button popup__button popup__button_edit" disabled = 'true'>Сохранить</button>
+        </form>
+      </div>
+    </div>
+    <div class="popup popup_ava">
+      <div class="popup__content popup__content_ava">
+        <img src="./images/close.svg" alt="button close" class="popup__close popup__close_ava">
+        <h3 class="popup__title popup__title_ava">Обновить аватар</h3>
+        <form class="popup__form popup__form_ava" novalidate name="ava">
+          <input
+            type="url"
+            required
+            name="link"
+            class="popup__input popup__input_type_link-ava"
+            placeholder="Ссылка на аватар"
+          >
+          <span class="popup__ava-error"></span>
+          <button type="submit" class="button popup__button popup__button_ava" disabled = 'true'>Сохранить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="main.267f32b9d452eff7a925.js"></script>
+</body>
+</html>
