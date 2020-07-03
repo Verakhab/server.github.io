@@ -6,7 +6,8 @@ usersRouter.get('/users', (req, res) => {
 });
 
 usersRouter.get('/users/:id', (req, res) => {
-  const userId = usersAll.find((item) => item._id === req.params.id);// eslint-disable-line
+  /* eslint no-underscore-dangle: ["error",{ "allow": ["_id"] }] */
+  const userId = usersAll.find((item) => item._id === req.params.id);
   if (userId) {
     return res.status(200).send(userId);
   }
