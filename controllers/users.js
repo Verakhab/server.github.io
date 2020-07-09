@@ -1,17 +1,17 @@
 const User = require('../models/user');
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res) => {  // eslint-disable-line
   try {
     const usersAll = await User.find({});
     if (usersAll) {
-      res.status(200).send(usersAll);
+      return res.status(200).send(usersAll);
     }
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
-const getUser = async (req, res) => { // eslint-disable-line
+const getUser = async (req, res) => {  // eslint-disable-line
   try {
     const userId = await User.findById(req.params.userId);
     if (userId) {
@@ -22,18 +22,18 @@ const getUser = async (req, res) => { // eslint-disable-line
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res) => {  // eslint-disable-line
   try {
     const { name, about, avatar } = req.body;
     const userNew = await User.create({ name, about, avatar });
     if (userNew) {
-      res.status(200).send(userNew);
+      return res.status(200).send(userNew);
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).send(err);
+      return res.status(400).send(err);
     }
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
