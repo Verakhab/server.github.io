@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 const getUsers = async (req, res) => {  // eslint-disable-line
@@ -24,10 +26,17 @@ const getUser = async (req, res) => {  // eslint-disable-line
 
 const createUser = async (req, res) => {  // eslint-disable-line
   try {
-    const { name, about, avatar } = req.body;
-    const userNew = await User.create({ name, about, avatar });
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    const passHash = await bcrypt.hash(password, 10);
+    const userNew = await User.create({
+      name, about, avatar, email, password: passHash,
+    });
     if (userNew) {
-      return res.status(200).send(userNew);
+      return res.status(200).send({
+        name, about, avatar, email,
+      });
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -37,8 +46,24 @@ const createUser = async (req, res) => {  // eslint-disable-line
   }
 };
 
+const login = async (req, res) => {  // eslint-disable-line
+  try {
+    const { email, password } = req.body;
+    const userFound = await User.findOne({ email }).select('+password').orFail();
+    const passTrue = await bcrypt.compare(password, userFound.password);
+    if (!passTrue) {
+      throw new Error();
+    }
+    const token = jwt.sign({ _id: userFound._id }, 'some-secret-key', { expiresIn: '7d' });
+    return res.status(200).send({ token });
+  } catch (err) {
+    res.status(401).send({ err });
+  }
+};
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
+  login,
 };

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -20,6 +21,20 @@ const userSchema = new mongoose.Schema({
       message: 'Здесь должна быть ссылка',
     },
     required: [true, 'Это обязательное поле'],
+  },
+  email: {
+    type: mongoose.Schema.Types.String,
+    validate: {
+      validator: validator.isEmail,
+    },
+    required: [true, 'Это обязательное поле'],
+    unique: true,
+  },
+  password: {
+    type: mongoose.Schema.Types.String,
+    minlength: [4, 'Должно быть от 4 символов'],
+    required: [true, 'Это обязательное поле'],
+    select: false,
   },
 });
 
