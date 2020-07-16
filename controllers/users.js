@@ -9,7 +9,7 @@ const getUsers = async (req, res) => {
       return res.status(200).send(usersAll);
     }
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 };
 // eslint-disable-next-line consistent-return
@@ -40,9 +40,9 @@ const createUser = async (req, res) => {
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).send(err);
+      return res.status(400).send(err.message);
     }
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 };
 // eslint-disable-next-line consistent-return
@@ -57,7 +57,7 @@ const login = async (req, res) => {
     const token = jwt.sign({ _id: userFound._id }, 'some-secret-key', { expiresIn: '7d' });
     return res.status(200).send({ token });
   } catch (err) {
-    res.status(401).send({ err });
+    res.status(401).send(err.message);
   }
 };
 

@@ -3,11 +3,10 @@ const Card = require('../models/card');
 const getCards = (req, res) => {
   try {
     Card.find({})
-      .populate('owner')
       .then((cards) => res.send({ data: cards }))
-      .catch((err) => res.status(500).send(err));
+      .catch((err) => res.status(500).send(err.message));
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 };
 
@@ -19,9 +18,9 @@ const createCard = async (req, res) => {
     return res.status(200).send(cardNew);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).send(err);
+      return res.status(400).send(err.message);
     }
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 };
 

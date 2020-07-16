@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: mongoose.Schema.Types.String,
     validate: {
-      validator: (v) => /^(http(s)?:\/\/)/.test(v),
+      validator: validator.isURL,
       message: 'Здесь должна быть ссылка',
     },
     required: [true, 'Это обязательное поле'],

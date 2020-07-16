@@ -20,15 +20,15 @@ mongoose.connect(URL, {
 const { connection } = mongoose;
 
 connection.on('open', () => {
-  /* eslint-disable no-alert, no-console */
+  /* eslint-disable no-console */
   console.info('Succesfully connected to MongoDB Database');
-  /* eslint-enable no-alert, no-console */
+  /* eslint-enable no-console */
 });
 
 connection.on('error', (err) => {
-  /* eslint-disable no-alert, no-console */
-  console.error(`Database Connection Error: ${err}`);
-  /* eslint-enable no-alert, no-console */
+  /* eslint-disable no-console */
+  console.error(`Database Connection Error: ${err.message}`);
+  /* eslint-enable no-console */
   process.exitCode = 1;
 });
 
@@ -45,4 +45,8 @@ app.use('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
 });
 
-app.listen(PORT);
+app.listen(PORT || 3000, () => {
+  /* eslint-disable no-console */
+  console.log('Server is running on port 3000');
+  /* eslint-enable no-console */
+});
