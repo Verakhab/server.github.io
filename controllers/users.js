@@ -29,6 +29,9 @@ const createUser = async (req, res) => {
     const {
       name, about, avatar, email, password,
     } = req.body;
+    if (!password || password.length <= 3) {
+      throw new Error('Пароль не введён или не корректен');
+    }
     const passHash = await bcrypt.hash(password, 10);
     const userNew = await User.create({
       name, about, avatar, email, password: passHash,
@@ -39,7 +42,7 @@ const createUser = async (req, res) => {
       });
     }
   } catch (err) {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'Error') {
       return res.status(400).send(err.message);
     }
     return res.status(500).send(err.message);
