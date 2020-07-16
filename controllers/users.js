@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-
-const getUsers = async (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const getUsers = async (req, res) => {
   try {
     const usersAll = await User.find({});
     if (usersAll) {
@@ -12,8 +12,8 @@ const getUsers = async (req, res) => {  // eslint-disable-line
     return res.status(500).send(err);
   }
 };
-
-const getUser = async (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const getUser = async (req, res) => {
   try {
     const userId = await User.findById(req.params.userId);
     if (userId) {
@@ -23,8 +23,8 @@ const getUser = async (req, res) => {  // eslint-disable-line
     return res.status(404).send({ message: 'Нет пользователя с таким id' });
   }
 };
-
-const createUser = async (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const createUser = async (req, res) => {
   try {
     const {
       name, about, avatar, email, password,
@@ -45,8 +45,8 @@ const createUser = async (req, res) => {  // eslint-disable-line
     return res.status(500).send(err);
   }
 };
-
-const login = async (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const userFound = await User.findOne({ email }).select('+password').orFail();

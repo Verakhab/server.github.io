@@ -1,6 +1,6 @@
 const Card = require('../models/card');
-
-const getCards = (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const getCards = (req, res) => {
   try {
     Card.find({})
       .populate('owner')
