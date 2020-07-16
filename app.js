@@ -1,3 +1,5 @@
+require('dotenv').config();
+const helmet = require('helmet');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,7 +12,7 @@ const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
-mongoose.connect(URL, {
+mongoose.connect(URL || 'mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -31,6 +33,8 @@ connection.on('error', (err) => {
   /* eslint-enable no-console */
   process.exitCode = 1;
 });
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 

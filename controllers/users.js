@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+
+const { JWT_SECRET } = process.env;
+
 // eslint-disable-next-line consistent-return
 const getUsers = async (req, res) => {
   try {
@@ -19,10 +22,10 @@ const getUser = async (req, res) => {
     if (userId) {
       res.status(200).send(userId);
     } else {
-      res.status(404).send({ message: 'Нет пользователя с таким id' });
+      throw new Error('Нет пользователя с таким id');
     }
   } catch (err) {
-    return res.status(404).send({ message: 'Нет пользователя с таким id' });
+    return res.status(404).send(err.message);
   }
 };
 // eslint-disable-next-line consistent-return
@@ -57,9 +60,9 @@ const login = async (req, res) => {
     const userFound = await User.findOne({ email }).select('+password').orFail();
     const passTrue = await bcrypt.compare(password, userFound.password);
     if (!passTrue) {
-      throw new Error();
+      throw new Error('Неверный пароль');
     }
-    const token = jwt.sign({ _id: userFound._id }, 'some-secret-key', { expiresIn: '7d' });
+    const token = jwt.sign({ _id: userFound._id }, JWT_SECRET, { expiresIn: '7d' });
     return res.status(200).send({ token });
   } catch (err) {
     res.status(401).send(err.message);

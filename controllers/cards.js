@@ -1,13 +1,9 @@
 const Card = require('../models/card');
 // eslint-disable-next-line consistent-return
 const getCards = (req, res) => {
-  try {
-    Card.find({})
-      .then((cards) => res.send({ data: cards }))
-      .catch((err) => res.status(500).send(err.message));
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
+  Card.find({})
+    .then((cards) => res.send({ data: cards }))
+    .catch((err) => res.status(500).send(err.message));
 };
 
 const createCard = async (req, res) => {
