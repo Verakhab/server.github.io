@@ -19,13 +19,20 @@ const createCard = async (req, res) => {
     return res.status(500).send(err.message);
   }
 };
-
+// eslint-disable-next-line consistent-return
 const deleteCard = async (req, res) => {
   try {
-    const cardId = await Card.findByIdAndDelete(req.params.cardId).orFail();
-    return res.status(200).send({ data: cardId });
+    const cardId = await Card.findById(req.params.cardId).orFail(new Error('Нет карточки с таким id'));
+    // eslint-disable-next-line eqeqeq
+    if (req.user._id == cardId.owner) {
+      const remCard = await Card.findByIdAndRemove(cardId._id).orFail(new Error('500'));
+      return res.status(200).send({ data: remCard });
+    // eslint-disable-next-line no-else-return
+    } else {
+      throw new Error('Вы можете удялять карточки только созданные вами');
+    }
   } catch (err) {
-    return res.status(404).send({ message: 'Нет карточки с таким id' });
+    return res.status(404).send(err.message);
   }
 };
 
