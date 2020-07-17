@@ -23,7 +23,7 @@ const createCard = async (req, res) => {
 const deleteCard = async (req, res) => {
   try {
     const cardId = await Card.findById(req.params.cardId).orFail(new Error('Нет карточки с таким id'));
-    const cardOwner = cardId.owner;
+    const cardOwner = cardId.owner.toString();
     if (req.user._id === cardOwner) {
       const remCard = await Card.findByIdAndRemove(cardId._id).orFail(new Error());
       return res.status(200).send({ data: remCard });
