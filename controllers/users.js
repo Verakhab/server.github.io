@@ -25,7 +25,10 @@ const getUser = async (req, res) => {
       throw new Error('Нет пользователя с таким id');
     }
   } catch (err) {
-    return res.status(404).send(err.message);
+    if (err.message === 'Нет пользователя с таким id') {
+      return res.status(404).send(err.message);
+    }
+    return res.status(400).send(err.message);
   }
 };
 // eslint-disable-next-line consistent-return
