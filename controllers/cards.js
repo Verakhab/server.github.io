@@ -32,6 +32,9 @@ const deleteCard = async (req, res) => {
       throw new Error('Вы можете удялять карточки только созданные вами');
     }
   } catch (err) {
+    if (err.message === 'Вы можете удялять карточки только созданные вами') {
+      return res.status(403).send(err.message);
+    }
     return res.status(404).send(err.message);
   }
 };
