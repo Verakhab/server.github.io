@@ -45,8 +45,40 @@ const deleteCard = async (req, res) => {
   }
 };
 
+const setLike = async (req, res) => {
+  try {
+    const arrLike = await Card.findByIdAndUpdate(req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true })
+      .orFail(new Error('Нет карточки с таким id'));
+    return res.status(200).send(arrLike);
+  } catch (err) {
+    if (err.message === 'Нет карточки с таким id') {
+      return res.status(404).send(err.message);
+    }
+    return res.status(400).send(err.message);
+  }
+};
+
+const remLike = async (req, res) => {
+  try {
+    const arrLike = await Card.findByIdAndUpdate(req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true })
+      .orFail(new Error('Нет карточки с таким id'));
+    return res.status(200).send(arrLike);
+  } catch (err) {
+    if (err.message === 'Нет карточки с таким id') {
+      return res.status(404).send(err.message);
+    }
+    return res.status(400).send(err.message);
+  }
+};
+
 module.exports = {
   getCards,
   createCard,
   deleteCard,
+  setLike,
+  remLike,
 };
