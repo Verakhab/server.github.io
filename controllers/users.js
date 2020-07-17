@@ -50,6 +50,11 @@ const createUser = async (req, res) => {
     if (err.name === 'Error') {
       return res.status(400).send(err.message);
     }
+    if (err.name === 'ValidationError') {
+      return res.status(409).send(err.message);
+    }
+    console.log(err.name);
+    console.log(err.code);
     return res.status(500).send(err.message);
   }
 };
