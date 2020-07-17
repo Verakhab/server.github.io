@@ -62,7 +62,7 @@ const login = async (req, res) => {
     if (!passTrue) {
       throw new Error('Неверный пароль');
     }
-    const token = jwt.sign({ _id: userFound._id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ _id: userFound._id }, JWT_SECRET || 'some-secret-key', { expiresIn: '7d' });
     return res.status(200).send({ token });
   } catch (err) {
     res.status(401).send(err.message);

@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
   const token = authorization.replace('Bearer ', '');
   let payload;
   try {
-    payload = await jwt.verify(token, JWT_SECRET);
+    payload = await jwt.verify(token, JWT_SECRET || 'some-secret-key');
   } catch (err) {
     return res.status(401).send({ message: 'Требуется авторизация' });
   }
