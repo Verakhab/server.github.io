@@ -47,14 +47,13 @@ const createUser = async (req, res) => {
       });
     }
   } catch (err) {
-    if (err.name === 'Error') {
-      return res.status(400).send(err.message);
-    }
-    if (err.name === 'ValidationError') {
+    const uniq = err.message.includes('`email` to be unique');
+    if (uniq) {
       return res.status(409).send(err.message);
     }
-    console.log(err.name);
-    console.log(err.code);
+    if (err.name === 'Error' || err.name === 'ValidationError') {
+      return res.status(400).send(err.message);
+    }
     return res.status(500).send(err.message);
   }
 };
