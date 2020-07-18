@@ -63,12 +63,13 @@ const createUser = async (req, res) => {
 
 const upUser = async (req, res) => {
   try {
-    if (!req.body.password || req.body.password.length <= 3) {
+    const { name, password } = req.body;
+    if (!password || password.length <= 3) {
       throw new Error('Пароль не введён или не корректен');
     }
     const passHash = await bcrypt.hash(req.body.password, 10);
     req.body.password = passHash;
-    const user = await User.findByIdAndUpdate(req.user._id, req.body)
+    const user = await User.findByIdAndUpdate(req.user._id, { name, password })
       .orFail(new Error('Нет пользователя с таким id'));
     return res.status(200).send(user);
   } catch (err) {
