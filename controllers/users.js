@@ -100,6 +100,9 @@ const upAvatar = async (req, res) => {
 // eslint-disable-next-line consistent-return
 const login = async (req, res) => {
   try {
+    if (!req.body.password || !req.body.email) {
+      throw new Error('Пароль или email не заданы');
+    }
     const { email, password } = req.body;
     const userFound = await User.findOne({ email }).select('+password').orFail();
     const passTrue = await bcrypt.compare(password, userFound.password);
