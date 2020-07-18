@@ -63,13 +63,12 @@ const createUser = async (req, res) => {
 
 const upUser = async (req, res) => {
   try {
-    const { name, password } = req.body;
-    if (!password || password.length <= 3) {
-      throw new Error('Пароль не введён или не корректен');
+    if (!req.body.name || !req.body.about) {
+      throw new Error('Имя или информация о пользователе не заданы');
     }
-    const passHash = await bcrypt.hash(req.body.password, 10);
-    req.body.password = passHash;
-    const user = await User.findByIdAndUpdate(req.user._id, { name, password })
+    const { name, about } = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, { name, about },
+      { new: true, runValidators: true })
       .orFail(new Error('Нет пользователя с таким id'));
     return res.status(200).send(user);
   } catch (err) {
@@ -86,7 +85,8 @@ const upUser = async (req, res) => {
 const upAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, { avatar })
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
+      { new: true, runValidators: true })
       .orFail(new Error('Нет пользователя с таким id'));
     return res.status(200).send(user);
   } catch (err) {
