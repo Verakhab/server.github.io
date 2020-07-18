@@ -85,7 +85,8 @@ const upUser = async (req, res) => {
 
 const upAvatar = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, req.body)
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar })
       .orFail(new Error('Нет пользователя с таким id'));
     return res.status(200).send(user);
   } catch (err) {
