@@ -72,11 +72,17 @@ const upUser = async (req, res) => {
       .orFail(new Error('Нет пользователя с таким id'));
     return res.status(200).send(user);
   } catch (err) {
-    if (err.name === 'ValidationError') {
+    if (err.message === 'Пароль не введён или не корректен') {
       return res.status(400).send(err.message);
     }
     if (err.message === 'Нет пользователя с таким id') {
       return res.status(404).send(err.message);
+    }
+    if (err.message === 'Имя или информация о пользователе не заданы') {
+      return res.status(400).send(err.message);
+    }
+    if (err.name === 'ValidationError') {
+      return res.status(400).send(err.message);
     }
     return res.status(500).send(err.message);
   }
@@ -93,8 +99,15 @@ const upAvatar = async (req, res) => {
       .orFail(new Error('Нет пользователя с таким id'));
     return res.status(200).send(user);
   } catch (err) {
+
     if (err.message === 'Нет пользователя с таким id') {
       return res.status(404).send(err.message);
+    }
+    if (err.message === 'Ссылка на аватар не задана') {
+      return res.status(400).send(err.message);
+    }
+    if (err.message === 'Validation failed: avatar: Здесь должна быть ссылка') {
+      return res.status(400).send(err.message);
     }
     if (err.name === 'ValidationError') {
       return res.status(400).send(err.message);
