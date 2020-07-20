@@ -99,10 +99,7 @@ const upAvatar = async (req, res) => {
     if (err.message === 'Нет пользователя с таким id') {
       return res.status(404).send(err.message);
     }
-    if (err.message === 'Ссылка на аватар не задана') {
-      return res.status(400).send(err.message);
-    }
-    if (err.message === 'Validation failed: avatar: Здесь должна быть ссылка') {
+    if (err.name === 'ValidationError') {
       return res.status(400).send(err.message);
     }
     return res.status(500).send(err.message);
