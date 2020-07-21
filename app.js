@@ -3,6 +3,7 @@ const helmet = require('helmet');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -12,7 +13,7 @@ const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
-mongoose.connect(URL || 'mongodb://localhost:27017/mestodb', {
+mongoose.connect(URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -22,21 +23,20 @@ mongoose.connect(URL || 'mongodb://localhost:27017/mestodb', {
 const { connection } = mongoose;
 
 connection.on('open', () => {
-  /* eslint-disable no-console */
+  // eslint-disable-next-line no-console
   console.info('Succesfully connected to MongoDB Database');
-  /* eslint-enable no-console */
 });
 
 connection.on('error', (err) => {
-  /* eslint-disable no-console */
+  // eslint-disable-next-line no-console
   console.error(`Database Connection Error: ${err.message}`);
-  /* eslint-enable no-console */
   process.exitCode = 1;
 });
 
 app.use(helmet());
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.post('/signin', login);
 app.post('/signup', createUser);
@@ -50,7 +50,6 @@ app.use('*', (req, res) => {
 });
 
 app.listen(PORT || 3000, () => {
-  /* eslint-disable no-console */
+  // eslint-disable-next-line no-console
   console.log('Server is running on port 3000');
-  /* eslint-enable no-console */
 });

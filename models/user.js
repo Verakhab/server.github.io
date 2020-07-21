@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: mongoose.Schema.Types.String,
-    minlength: [4, 'Должно быть от 4 символов'],
     required: [true, 'Это обязательное поле'],
     select: false,
   },

@@ -22,24 +22,26 @@ const createCard = async (req, res) => {
 // eslint-disable-next-line consistent-return
 const deleteCard = async (req, res) => {
   try {
-    const cardId = await Card.findById(req.params.cardId).orFail(new Error('Нет карточки с таким id'));
+    const cardId = await Card.findById(req.params.cardId)
+      .orFail(new Error(JSON.stringify({ message: 'Нет карточки с таким id' })));
     const cardOwner = cardId.owner.toString();
     if (req.user._id === cardOwner) {
-      const remCard = await Card.findByIdAndRemove(cardId._id).orFail(new Error());
+      const remCard = await Card.findByIdAndRemove(cardId._id)
+        .orFail(new Error());
       return res.status(200).send({ data: remCard });
     // eslint-disable-next-line no-else-return
     } else {
-      throw new Error('Вы можете удялять карточки только созданные вами');
+      throw new Error(JSON.stringify({ message: 'Вы можете удялять карточки только созданные вами' }));
     }
   } catch (err) {
     if (err.name === 'DocumentNotFoundError') {
       return res.status(500).send(err.message);
     }
     if (err.message === 'Вы можете удялять карточки только созданные вами') {
-      return res.status(403).send(err.message);
+      return res.status(403).send(JSON.parse(err.message));
     }
     if (err.message === 'Нет карточки с таким id') {
-      return res.status(404).send(err.message);
+      return res.status(404).send(JSON.parse(err.message));
     }
     return res.status(400).send(err.message);
   }
@@ -50,11 +52,11 @@ const setLike = async (req, res) => {
     const arrLike = await Card.findByIdAndUpdate(req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true })
-      .orFail(new Error('Нет карточки с таким id'));
+      .orFail(new Error(JSON.stringify({ message: 'Нет карточки с таким id' })));
     return res.status(200).send(arrLike);
   } catch (err) {
     if (err.message === 'Нет карточки с таким id') {
-      return res.status(404).send(err.message);
+      return res.status(404).send(JSON.parse(err.message));
     }
     return res.status(400).send(err.message);
   }
@@ -65,11 +67,11 @@ const remLike = async (req, res) => {
     const arrLike = await Card.findByIdAndUpdate(req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true })
-      .orFail(new Error('Нет карточки с таким id'));
+      .orFail(new Error(JSON.stringify({ message: 'Нет карточки с таким id' })));
     return res.status(200).send(arrLike);
   } catch (err) {
     if (err.message === 'Нет карточки с таким id') {
-      return res.status(404).send(err.message);
+      return res.status(404).send(JSON.parse(err.message));
     }
     return res.status(400).send(err.message);
   }
