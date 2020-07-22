@@ -18,11 +18,17 @@ const getUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const userId = await User.findById(req.params.userId)
-      .orFail(new Error('Нет пользователя с таким id'));
+      .orFail();
     res.status(200).send(userId);
   } catch (err) {
+    if (err.name === 'DocumentNotFoundError') {
+      return res.status(404).send({ message: err.message });
+    }
     if (err.name === 'Error') {
       return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'CastError') {
+      return res.status(400).send({ message: err.message });
     }
     return res.status(500).send({ message: err.message });
   }
@@ -33,6 +39,7 @@ const createUser = async (req, res) => {
     const {
       name, about, avatar, email, password,
     } = req.body;
+    User.validEmPass(email, password);
     const passHash = await bcrypt.hash(password, 10);
     const userNew = await User.create({
       name, about, avatar, email, password: passHash,
@@ -45,9 +52,9 @@ const createUser = async (req, res) => {
   } catch (err) {
     const uniq = err.message.includes('`email` to be unique');
     if (uniq) {
-      return res.status(409).send(err.message);
+      return res.status(409).send({ message: err.message });
     }
-    if (err.name === 'ValidationError') {
+    if (err.name === 'ValidationError' || err.name === 'Error') {
       return res.status(400).send({ message: err.message });
     }
     return res.status(500).send({ message: err.message });
@@ -94,6 +101,7 @@ const upAvatar = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    User.validEmPass(email, password);
     const userFound = await User.findOne({ email }).select('+password')
       .orFail(new Error('Пароль или email не заданы'));
     const isPass = await bcrypt.compare(password, userFound.password);
@@ -109,7 +117,7 @@ const login = async (req, res) => {
     });
     return res.status(200).send({ token });
   } catch (err) {
-    res.status(401).send({ message: err.message });
+    res.status(400).send({ message: err.message });
   }
 };
 

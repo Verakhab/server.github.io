@@ -37,5 +37,12 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
+
+userSchema.statics.validEmPass = function validEmPass(email, password) {
+  if (!email || !password) {
+    throw new Error('Пароль или email не заданы');
+  }
+};
+
 userSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('user', userSchema);
