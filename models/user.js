@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -16,11 +18,31 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: mongoose.Schema.Types.String,
     validate: {
-      validator: (v) => /^(http(s)?:\/\/)/.test(v),
+      validator: validator.isURL,
       message: 'Здесь должна быть ссылка',
     },
     required: [true, 'Это обязательное поле'],
   },
+  email: {
+    type: mongoose.Schema.Types.String,
+    validate: {
+      validator: validator.isEmail,
+    },
+    required: [true, 'Это обязательное поле'],
+    unique: true,
+  },
+  password: {
+    type: mongoose.Schema.Types.String,
+    required: [true, 'Это обязательное поле'],
+    select: false,
+  },
 });
 
+userSchema.statics.validEmPass = function validEmPass(email, password) {
+  if (!email || !password) {
+    throw new Error('Пароль или email не заданы');
+  }
+};
+
+userSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('user', userSchema);

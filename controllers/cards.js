@@ -1,14 +1,9 @@
 const Card = require('../models/card');
-
-const getCards = (req, res) => {  // eslint-disable-line
-  try {
-    Card.find({})
-      .populate('owner')
-      .then((cards) => res.send({ data: cards }))
-      .catch((err) => res.status(500).send(err));
-  } catch (err) {
-    return res.status(500).send(err);
-  }
+// eslint-disable-next-line consistent-return
+const getCards = (req, res) => {
+  Card.find({})
+    .then((cards) => res.send({ data: cards }))
+    .catch((err) => res.status(500).send(err.message));
 };
 
 const createCard = async (req, res) => {
@@ -19,18 +14,72 @@ const createCard = async (req, res) => {
     return res.status(200).send(cardNew);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).send(err);
+      return res.status(400).send({ message: err.message });
     }
-    return res.status(500).send(err);
+    return res.status(500).send({ message: err.message });
+  }
+};
+// eslint-disable-next-line consistent-return
+const deleteCard = async (req, res) => {
+  const id = req.params.cardId;
+  try {
+    const cardId = await Card.findById(id)
+      .orFail();
+    const cardOwner = cardId.owner.toString();
+    if (req.user._id === cardOwner) {
+      const remCard = await Card.findByIdAndRemove(cardId._id)
+        .orFail();
+      return res.status(200).send({ data: remCard });
+    // eslint-disable-next-line no-else-return
+    } else {
+      return res.status(403).send({ message: 'Вы можете удалять карточки созданные вами' });
+    }
+  } catch (err) {
+    if (err.name === 'DocumentNotFoundError') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'CastError') {
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
+    }
+    return res.status(500).send({ message: err.message });
   }
 };
 
-const deleteCard = async (req, res) => {
+const setLike = async (req, res) => {
+  const id = req.params.cardId;
   try {
-    const cardId = await Card.findByIdAndDelete(req.params.cardId).orFail();
-    return res.status(200).send({ data: cardId });
+    const arrLike = await Card.findByIdAndUpdate(id,
+      { $addToSet: { likes: req.user._id } },
+      { new: true })
+      .orFail();
+    return res.status(200).send(arrLike);
   } catch (err) {
-    return res.status(404).send({ message: 'Нет карточки с таким id' });
+    if (err.name === 'DocumentNotFoundError') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'CastError') {
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
+    }
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+const remLike = async (req, res) => {
+  const id = req.params.cardId;
+  try {
+    const arrLike = await Card.findByIdAndUpdate(id,
+      { $pull: { likes: req.user._id } },
+      { new: true })
+      .orFail();
+    return res.status(200).send(arrLike);
+  } catch (err) {
+    if (err.name === 'DocumentNotFoundError ') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'CastError') {
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
+    }
+    return res.status(500).send({ message: err.message });
   }
 };
 
@@ -38,4 +87,6 @@ module.exports = {
   getCards,
   createCard,
   deleteCard,
+  setLike,
+  remLike,
 };

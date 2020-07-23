@@ -1,39 +1,124 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
-const getUsers = async (req, res) => {  // eslint-disable-line
+const { JWT_SECRET } = process.env;
+
+// eslint-disable-next-line consistent-return
+const getUsers = async (req, res) => {
   try {
-    const usersAll = await User.find({});
-    if (usersAll) {
-      return res.status(200).send(usersAll);
-    }
+    const usersAll = await User.find({})
+      .orFail(new Error('Ошибка сервера'));
+    return res.status(200).send(usersAll);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send({ message: err.message });
   }
 };
-
-const getUser = async (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const getUser = async (req, res) => {
+  const id = req.params.userId;
   try {
-    const userId = await User.findById(req.params.userId);
-    if (userId) {
-      return res.status(200).send(userId);
-    }
+    const userId = await User.findById(id)
+      .orFail();
+    res.status(200).send(userId);
   } catch (err) {
-    return res.status(404).send({ message: 'Нет пользователя с таким id' });
+    if (err.name === 'DocumentNotFoundError') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'Error') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'CastError') {
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
+    }
+    return res.status(500).send({ message: err.message });
   }
 };
-
-const createUser = async (req, res) => {  // eslint-disable-line
+// eslint-disable-next-line consistent-return
+const createUser = async (req, res) => {
   try {
-    const { name, about, avatar } = req.body;
-    const userNew = await User.create({ name, about, avatar });
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    User.validEmPass(email, password);
+    const passHash = await bcrypt.hash(password, 10);
+    const userNew = await User.create({
+      name, about, avatar, email, password: passHash,
+    });
     if (userNew) {
-      return res.status(200).send(userNew);
+      return res.status(200).send({
+        name, about, avatar, email,
+      });
     }
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return res.status(400).send(err);
+    const uniq = err.message.includes('`email` to be unique');
+    if (uniq) {
+      return res.status(409).send({ message: 'Такой email уже существует' });
     }
-    return res.status(500).send(err);
+    if (err.name === 'ValidationError' || err.name === 'Error') {
+      return res.status(400).send({ message: err.message });
+    }
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+const upUser = async (req, res) => {
+  try {
+    const { name, about } = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, { name, about },
+      { new: true, runValidators: true })
+      .orFail(new Error('Нет пользователя с таким id'));
+    return res.status(200).send(user);
+  } catch (err) {
+    if (err.name === 'Error') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'ValidationError') {
+      return res.status(400).send({ message: err.message });
+    }
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+const upAvatar = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
+      { new: true, runValidators: true })
+      .orFail(new Error('Нет пользователя с таким id'));
+    return res.status(200).send(user);
+  } catch (err) {
+    if (err.name === 'Error') {
+      return res.status(404).send({ message: err.message });
+    }
+    if (err.name === 'ValidationError') {
+      return res.status(400).send({ message: err.message });
+    }
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+// eslint-disable-next-line consistent-return
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    User.validEmPass(email, password);
+    const userFound = await User.findOne({ email }).select('+password')
+      .orFail(new Error('Пароль или email не заданы'));
+    const isPass = await bcrypt.compare(password, userFound.password);
+    if (!isPass) {
+      throw new Error('Пароль или email не заданы');
+    }
+    const token = jwt.sign({ _id: userFound._id },
+      JWT_SECRET || 'some-secret-key',
+      { expiresIn: '7d' });
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      sameSite: true,
+    });
+    return res.status(200).send({ token });
+  } catch (err) {
+    res.status(400).send({ message: err.message });
   }
 };
 
@@ -41,4 +126,7 @@ module.exports = {
   getUsers,
   getUser,
   createUser,
+  upUser,
+  upAvatar,
+  login,
 };
