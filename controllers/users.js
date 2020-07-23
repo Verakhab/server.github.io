@@ -16,8 +16,9 @@ const getUsers = async (req, res) => {
 };
 // eslint-disable-next-line consistent-return
 const getUser = async (req, res) => {
+  const id = req.params.userId;
   try {
-    const userId = await User.findById(req.params.userId)
+    const userId = await User.findById(id)
       .orFail();
     res.status(200).send(userId);
   } catch (err) {
@@ -28,7 +29,7 @@ const getUser = async (req, res) => {
       return res.status(404).send({ message: err.message });
     }
     if (err.name === 'CastError') {
-      return res.status(400).send({ message: err.message });
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
     }
     return res.status(500).send({ message: err.message });
   }
@@ -52,7 +53,7 @@ const createUser = async (req, res) => {
   } catch (err) {
     const uniq = err.message.includes('`email` to be unique');
     if (uniq) {
-      return res.status(409).send({ message: err.message });
+      return res.status(409).send({ message: 'Такой email уже существует' });
     }
     if (err.name === 'ValidationError' || err.name === 'Error') {
       return res.status(400).send({ message: err.message });

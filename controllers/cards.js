@@ -21,8 +21,9 @@ const createCard = async (req, res) => {
 };
 // eslint-disable-next-line consistent-return
 const deleteCard = async (req, res) => {
+  const id = req.params.cardId;
   try {
-    const cardId = await Card.findById(req.params.cardId)
+    const cardId = await Card.findById(id)
       .orFail();
     const cardOwner = cardId.owner.toString();
     if (req.user._id === cardOwner) {
@@ -37,19 +38,17 @@ const deleteCard = async (req, res) => {
     if (err.name === 'DocumentNotFoundError') {
       return res.status(404).send({ message: err.message });
     }
-    if (err.name === 'Error') {
-      return res.status(403).send({ message: err.message });
-    }
     if (err.name === 'CastError') {
-      return res.status(400).send({ message: err.message });
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
     }
     return res.status(500).send({ message: err.message });
   }
 };
 
 const setLike = async (req, res) => {
+  const id = req.params.cardId;
   try {
-    const arrLike = await Card.findByIdAndUpdate(req.params.cardId,
+    const arrLike = await Card.findByIdAndUpdate(id,
       { $addToSet: { likes: req.user._id } },
       { new: true })
       .orFail();
@@ -59,15 +58,16 @@ const setLike = async (req, res) => {
       return res.status(404).send({ message: err.message });
     }
     if (err.name === 'CastError') {
-      return res.status(400).send({ message: err.message });
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
     }
     return res.status(500).send({ message: err.message });
   }
 };
 
 const remLike = async (req, res) => {
+  const id = req.params.cardId;
   try {
-    const arrLike = await Card.findByIdAndUpdate(req.params.cardId,
+    const arrLike = await Card.findByIdAndUpdate(id,
       { $pull: { likes: req.user._id } },
       { new: true })
       .orFail();
@@ -77,7 +77,7 @@ const remLike = async (req, res) => {
       return res.status(404).send({ message: err.message });
     }
     if (err.name === 'CastError') {
-      return res.status(400).send({ message: err.message });
+      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
     }
     return res.status(500).send({ message: err.message });
   }
