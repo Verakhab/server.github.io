@@ -4,7 +4,7 @@ const ConflictingRequest = require('../errors/conflicting-request-err');
 const Unauthorized = require('../errors/unauthorized-err');
 const User = require('../models/user');
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, NODE_ENV } = process.env;
 
 // eslint-disable-next-line consistent-return
 const getUsers = async (req, res, next) => {
@@ -88,7 +88,7 @@ const login = async (req, res, next) => {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
     const token = jwt.sign({ _id: userFound._id },
-      JWT_SECRET || 'some-secret-key',
+      NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
       { expiresIn: '7d' });
     res.cookie('jwt', token, {
       httpOnly: true,
