@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
+const Unauthorized = require('../errors/unauthorized-err');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -40,7 +41,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics.validEmPass = function validEmPass(email, password) {
   if (!email || !password) {
-    throw new Error('Пароль или email не заданы');
+    throw new Unauthorized('Пароль или email не заданы или не корректны');
   }
 };
 

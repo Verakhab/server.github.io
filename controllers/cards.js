@@ -1,51 +1,42 @@
 const Card = require('../models/card');
+const Forbidden = require('../errors/forbidden-err');
 // eslint-disable-next-line consistent-return
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send(err.message));
+    .catch(next);
 };
-
-const createCard = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const createCard = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { name, link } = req.body;
     const cardNew = await Card.create({ name, link, owner: _id });
     return res.status(200).send(cardNew);
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return res.status(400).send({ message: err.message });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
 // eslint-disable-next-line consistent-return
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   const id = req.params.cardId;
   try {
     const cardId = await Card.findById(id)
       .orFail();
     const cardOwner = cardId.owner.toString();
-    if (req.user._id === cardOwner) {
+    if (req.user._id !== cardOwner) {
+      throw new Forbidden('Вы можете удалять карточки созданные только вами');
+    } else {
       const remCard = await Card.findByIdAndRemove(cardId._id)
         .orFail();
       return res.status(200).send({ data: remCard });
-    // eslint-disable-next-line no-else-return
-    } else {
-      return res.status(403).send({ message: 'Вы можете удалять карточки созданные вами' });
     }
   } catch (err) {
-    if (err.name === 'DocumentNotFoundError') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'CastError') {
-      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
-
-const setLike = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const setLike = async (req, res, next) => {
   const id = req.params.cardId;
   try {
     const arrLike = await Card.findByIdAndUpdate(id,
@@ -54,17 +45,11 @@ const setLike = async (req, res) => {
       .orFail();
     return res.status(200).send(arrLike);
   } catch (err) {
-    if (err.name === 'DocumentNotFoundError') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'CastError') {
-      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
-
-const remLike = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const remLike = async (req, res, next) => {
   const id = req.params.cardId;
   try {
     const arrLike = await Card.findByIdAndUpdate(id,
@@ -73,13 +58,7 @@ const remLike = async (req, res) => {
       .orFail();
     return res.status(200).send(arrLike);
   } catch (err) {
-    if (err.name === 'DocumentNotFoundError ') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'CastError') {
-      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
 

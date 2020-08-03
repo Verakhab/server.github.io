@@ -1,6 +1,10 @@
 # Server for projekt 9 sprint
 
-https://verakhab.github.io/server.github.io/
+__Publik IP:__ 130.193.48.5
+
+__Domain:__ mest.cf
+
+__GitHub:__ https://verakhab.github.io/server.github.io/
 
 Version: v.1.0.0
 

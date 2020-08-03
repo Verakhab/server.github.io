@@ -1,46 +1,43 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const ConflictingRequest = require('../errors/conflicting-request-err');
+const Unauthorized = require('../errors/unauthorized-err');
 const User = require('../models/user');
 
 const { JWT_SECRET } = process.env;
 
 // eslint-disable-next-line consistent-return
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const usersAll = await User.find({})
-      .orFail(new Error('Ошибка сервера'));
+      .orFail();
     return res.status(200).send(usersAll);
   } catch (err) {
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
 // eslint-disable-next-line consistent-return
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   const id = req.params.userId;
   try {
     const userId = await User.findById(id)
       .orFail();
     res.status(200).send(userId);
   } catch (err) {
-    if (err.name === 'DocumentNotFoundError') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'Error') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'CastError') {
-      return res.status(400).send({ message: `Передан некорректный ID ${{ id }}` });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
 // eslint-disable-next-line consistent-return
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const {
       name, about, avatar, email, password,
     } = req.body;
     User.validEmPass(email, password);
+    const uniqEmail = await User.findOne({ email });
+    if (uniqEmail) {
+      throw new ConflictingRequest('Такой email уже существует');
+    }
     const passHash = await bcrypt.hash(password, 10);
     const userNew = await User.create({
       name, about, avatar, email, password: passHash,
@@ -51,63 +48,44 @@ const createUser = async (req, res) => {
       });
     }
   } catch (err) {
-    const uniq = err.message.includes('`email` to be unique');
-    if (uniq) {
-      return res.status(409).send({ message: 'Такой email уже существует' });
-    }
-    if (err.name === 'ValidationError' || err.name === 'Error') {
-      return res.status(400).send({ message: err.message });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
-
-const upUser = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const upUser = async (req, res, next) => {
   try {
     const { name, about } = req.body;
     const user = await User.findByIdAndUpdate(req.user._id, { name, about },
       { new: true, runValidators: true })
-      .orFail(new Error('Нет пользователя с таким id'));
+      .orFail();
     return res.status(200).send(user);
   } catch (err) {
-    if (err.name === 'Error') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'ValidationError') {
-      return res.status(400).send({ message: err.message });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
-
-const upAvatar = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const upAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const user = await User.findByIdAndUpdate(req.user._id, { avatar },
       { new: true, runValidators: true })
-      .orFail(new Error('Нет пользователя с таким id'));
+      .orFail();
     return res.status(200).send(user);
   } catch (err) {
-    if (err.name === 'Error') {
-      return res.status(404).send({ message: err.message });
-    }
-    if (err.name === 'ValidationError') {
-      return res.status(400).send({ message: err.message });
-    }
-    return res.status(500).send({ message: err.message });
+    next(err);
   }
 };
 
 // eslint-disable-next-line consistent-return
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     User.validEmPass(email, password);
     const userFound = await User.findOne({ email }).select('+password')
-      .orFail(new Error('Пароль или email не заданы'));
+      .orFail();
     const isPass = await bcrypt.compare(password, userFound.password);
     if (!isPass) {
-      throw new Error('Пароль или email не заданы');
+      throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
     const token = jwt.sign({ _id: userFound._id },
       JWT_SECRET || 'some-secret-key',
@@ -118,7 +96,7 @@ const login = async (req, res) => {
     });
     return res.status(200).send({ token });
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    next(err);
   }
 };
 
