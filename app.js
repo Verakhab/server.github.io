@@ -96,7 +96,7 @@ app.use((err, req, res, next) => {
   if (err.name === 'DocumentNotFoundError') {
     return res
       .status(404)
-      .send({ message: err.message });
+      .send({ message: 'Запрашиваемые данные не найдены' });
   }
   if (err.statusCode === undefined) {
     const {

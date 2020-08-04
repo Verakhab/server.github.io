@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const ConflictingRequest = require('../errors/conflicting-request-err');
 const Unauthorized = require('../errors/unauthorized-err');
 const User = require('../models/user');
 
@@ -33,11 +32,6 @@ const createUser = async (req, res, next) => {
     const {
       name, about, avatar, email, password,
     } = req.body;
-    User.validEmPass(email, password);
-    const uniqEmail = await User.findOne({ email });
-    if (uniqEmail) {
-      throw new ConflictingRequest('Такой email уже существует');
-    }
     const passHash = await bcrypt.hash(password, 10);
     const userNew = await User.create({
       name, about, avatar, email, password: passHash,
@@ -80,7 +74,6 @@ const upAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    User.validEmPass(email, password);
     const userFound = await User.findOne({ email }).select('+password')
       .orFail();
     const isPass = await bcrypt.compare(password, userFound.password);
