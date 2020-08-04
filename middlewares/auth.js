@@ -5,14 +5,14 @@ const { JWT_SECRET, NODE_ENV } = process.env;
 
 module.exports = async (req, res, next) => {
   const authorization = req.cookies.jwt;
-  if (!authorization) {
-    throw new Unauthorized('Требуется авторизация');
-  }
   let payload;
   try {
+    if (!authorization) {
+      throw new Unauthorized('Требуется авторизация');
+    }
     payload = await jwt.verify(authorization, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
   } catch (err) {
-    next(err);
+    return next(err);
   }
   req.user = payload;
   return next();

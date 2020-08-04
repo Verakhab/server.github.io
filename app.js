@@ -10,6 +10,7 @@ const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const NotFoundError = require('./errors/not-found-err');
 // const BadRequest = require('./middlewares/errors/bad-request-err');
 
 const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
@@ -68,8 +69,12 @@ app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+app.use('*', (req, res, next) => {
+  try {
+    throw new NotFoundError('Запрашиваемый ресурс не найден');
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.use(errorLogger);
@@ -93,7 +98,7 @@ app.use((err, req, res, next) => {
       .status(404)
       .send({ message: err.message });
   }
-  if (err.statusCode === '') {
+  if (err.statusCode === undefined) {
     const {
       statusCode = '500',
       message = { message: 'Ошибка сервера' },
