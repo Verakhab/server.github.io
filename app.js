@@ -11,7 +11,6 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-err');
-// const BadRequest = require('./middlewares/errors/bad-request-err');
 
 const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
@@ -59,7 +58,8 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
-    avatar: Joi.string().required().uri(),
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().regex(/^(http(s)?:\/\/)(w{3}\.)?((\d+\.\d+\.\d+\.\d+)|(([A-Za-z\.-]{2,})\.([A-Za-z]{2,6})))((:\d{2,5})?\/?([\dA-Za-z\/]+#?))?/).required(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),

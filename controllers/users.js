@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Unauthorized = require('../errors/unauthorized-err');
+const ConflictingRequest = require('../errors/conflicting-request-err');
 const User = require('../models/user');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
@@ -42,6 +43,9 @@ const createUser = async (req, res, next) => {
       });
     }
   } catch (err) {
+    if (err.errors.email && err.errors.email.kind === 'unique') {
+      return next(new ConflictingRequest('Такой email уже существует'));
+    }
     next(err);
   }
 };

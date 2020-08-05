@@ -12,6 +12,9 @@ module.exports = async (req, res, next) => {
     }
     payload = await jwt.verify(authorization, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
   } catch (err) {
+    if (err.name === 'JsonWebTokenError') {
+      return next(new Unauthorized('Токен устарел, требуется авторизация'));
+    }
     return next(err);
   }
   req.user = payload;
