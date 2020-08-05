@@ -78,8 +78,10 @@ const upAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const userFound = await User.findOne({ email }).select('+password')
-      .orFail();
+    const userFound = await User.findOne({ email }).select('+password');
+    if (userFound === null) {
+      throw new Unauthorized('Пароль или email не заданы или не корректны');
+    }
     const isPass = await bcrypt.compare(password, userFound.password);
     if (!isPass) {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
