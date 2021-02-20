@@ -38,7 +38,7 @@ const createUser = async (req, res, next) => {
       name, about, avatar, email, password: passHash,
     });
     if (userNew) {
-      return res.status(200).send({
+      return res.status(201).send({
         name, about, avatar, email,
       });
     }
@@ -89,10 +89,10 @@ const login = async (req, res, next) => {
     const token = jwt.sign({ _id: userFound._id },
       NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
       { expiresIn: '7d' });
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      sameSite: true,
-    });
+    // res.cookie('jwt', token, {
+    //   httpOnly: true,
+    //   sameSite: true,
+    // });
     return res.status(200).send({ token });
   } catch (err) {
     next(err);
