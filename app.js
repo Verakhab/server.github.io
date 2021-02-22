@@ -1,7 +1,7 @@
 require('dotenv').config();
 const helmet = require('helmet');
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -17,7 +17,7 @@ const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 app.set('trust proxy');
 
