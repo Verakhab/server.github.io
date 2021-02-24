@@ -17,10 +17,7 @@ const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:8080',
-  optionsSuccessStatus: 200,
-}));
+app.use(cors());
 
 app.set('trust proxy');
 
