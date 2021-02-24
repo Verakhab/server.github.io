@@ -19,7 +19,7 @@ const app = express();
 
 app.use(cors());
 
-app.set('trust proxy');
+// app.set('trust proxy');
 
 mongoose.connect(URL, {
   useNewUrlParser: true,
