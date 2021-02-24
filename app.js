@@ -22,6 +22,7 @@ app.use(cors({
     'http://localhost:8080',
     'https://verakhab.github.io/mesto/',
   ],
+  optionsSuccessStatus: 200,
   credentials: true,
 }));
 
