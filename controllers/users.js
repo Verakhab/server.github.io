@@ -64,8 +64,8 @@ const upUser = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 const upAvatar = async (req, res, next) => {
   try {
-    const { avatarNew } = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, { avatarNew },
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
       { new: true, runValidators: true })
       .orFail();
     return res.status(200).send(user);
@@ -77,12 +77,12 @@ const upAvatar = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 const login = async (req, res, next) => {
   try {
-    const { emal, pass } = req.body;
-    const userFound = await User.findOne({ emal }).select('+password');
+    const { email, password } = req.body;
+    const userFound = await User.findOne({ email }).select('+password');
     if (userFound === null) {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
-    const isPass = await bcrypt.compare(pass, userFound.pass);
+    const isPass = await bcrypt.compare(password, userFound.password);
     if (!isPass) {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
