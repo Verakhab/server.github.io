@@ -77,12 +77,12 @@ const upAvatar = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const userFound = await User.findOne({ email }).select('+password');
+    const { emal, pass } = req.body;
+    const userFound = await User.findOne({ emal }).select('+password');
     if (userFound === null) {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
-    const isPass = await bcrypt.compare(password, userFound.password);
+    const isPass = await bcrypt.compare(pass, userFound.pass);
     if (!isPass) {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
