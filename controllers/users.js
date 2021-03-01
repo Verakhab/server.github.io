@@ -65,7 +65,7 @@ const upUser = async (req, res, next) => {
 const upAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
+    const user = await User.findByIdAndUpdate(req.user._id, avatar,
       { new: true, runValidators: true })
       .orFail();
     return res.status(200).send(user);
