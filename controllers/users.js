@@ -64,8 +64,8 @@ const upUser = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 const upAvatar = async (req, res, next) => {
   try {
-    const { avatar } = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
+    const { avatarNew } = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, { avatarNew },
       { new: true, runValidators: true })
       .orFail();
     return res.status(200).send(user);
