@@ -93,7 +93,7 @@ const login = async (req, res, next) => {
     //   httpOnly: true,
     //   sameSite: true,
     // });
-    userFound.token = tok.tok;
+    userFound.token = tok;
     const {
       token, _id, name, about, avatar,
     } = userFound;
