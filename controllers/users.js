@@ -18,7 +18,7 @@ const getUsers = async (req, res, next) => {
 };
 // eslint-disable-next-line consistent-return
 const getUser = async (req, res, next) => {
-  const id = req.params.userId;
+  const { id } = req.user;
   try {
     const userId = await User.findById(id)
       .orFail();

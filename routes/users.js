@@ -6,7 +6,7 @@ const {
 
 usersRouter.get('/users', getUsers);
 
-usersRouter.get('/users/:userId', celebrate({
+usersRouter.get('/user/', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().hex().length(24),
   }),
