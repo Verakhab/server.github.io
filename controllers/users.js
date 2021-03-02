@@ -38,7 +38,9 @@ const createUser = async (req, res, next) => {
       name, about, avatar, email, password: passHash,
     });
     if (userNew) {
-      return res.status(201).send(userNew);
+      return res.status(201).send({
+        name, about, avatar, email,
+      });
     }
   } catch (err) {
     if (err.errors.email && err.errors.email.kind === 'unique') {
@@ -84,18 +86,24 @@ const login = async (req, res, next) => {
     if (!isPass) {
       throw new Unauthorized('Пароль или email не заданы или не корректны');
     }
-    const token = jwt.sign({ _id: userFound._id },
+    const tok = jwt.sign({ _id: userFound._id },
       NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
       { expiresIn: '7d' });
     // res.cookie('jwt', token, {
     //   httpOnly: true,
     //   sameSite: true,
     // });
-    return res.status(200).send({ token },
-      userFound._id,
-      userFound.name,
-      userFound.about,
-      userFound.avatar);
+    userFound.token = tok.tok;
+    const {
+      token, _id, name, about, avatar,
+    } = userFound;
+    return res.status(200).send({
+      token,
+      _id,
+      name,
+      about,
+      avatar,
+    });
   } catch (err) {
     next(err);
   }
