@@ -38,9 +38,7 @@ const createUser = async (req, res, next) => {
       name, about, avatar, email, password: passHash,
     });
     if (userNew) {
-      return res.status(201).send({
-        name, about, avatar, email,
-      });
+      return res.status(201).send(userNew);
     }
   } catch (err) {
     if (err.errors.email && err.errors.email.kind === 'unique') {
@@ -93,7 +91,11 @@ const login = async (req, res, next) => {
     //   httpOnly: true,
     //   sameSite: true,
     // });
-    return res.status(200).send({ token });
+    return res.status(200).send({ token },
+      userFound._id,
+      userFound.name,
+      userFound.about,
+      userFound.avatar);
   } catch (err) {
     next(err);
   }

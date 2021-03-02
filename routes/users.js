@@ -4,9 +4,9 @@ const {
   getUser, getUsers, upUser, upAvatar,
 } = require('../controllers/users');
 
-usersRouter.get('/users', getUsers);
-
 usersRouter.get('/user', getUser);
+
+usersRouter.get('/users', getUsers);
 
 usersRouter.patch('/users/me', celebrate({
   body: Joi.object().keys({
