@@ -1,8 +1,12 @@
 const usersRouter = require('express').Router();
+const multer = require('multer');
 const { celebrate, Joi } = require('celebrate');
 const {
   getUser, getUsers, upUser, upAvatar,
 } = require('../controllers/users');
+
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
 
 usersRouter.get('/user', getUser);
 
@@ -15,7 +19,7 @@ usersRouter.patch('/users/me', celebrate({
   }),
 }), upUser);
 
-usersRouter.patch('/users/me/avatar', upAvatar);
+usersRouter.patch('/users/me/avatar', upload.single('link'), upAvatar);
 
 module.exports = usersRouter;
 

@@ -1,4 +1,3 @@
-const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Unauthorized = require('../errors/unauthorized-err');
@@ -6,9 +5,6 @@ const ConflictingRequest = require('../errors/conflicting-request-err');
 const User = require('../models/user');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
-
-const multerStorage = multer.memoryStorage();
-const upload = multer({ storage: multerStorage });
 
 // eslint-disable-next-line consistent-return
 const getUsers = async (req, res, next) => {
