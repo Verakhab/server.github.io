@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     //   validator: validator.isURL,
     //   message: 'Здесь должна быть ссылка',
     // },
-    required: [true, 'Это обязательное поле'],
+    // required: [true, 'Это обязательное поле'],
   },
   email: {
     type: mongoose.Schema.Types.String,
