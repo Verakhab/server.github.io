@@ -68,10 +68,12 @@ const upAvatar = async (req, res, next) => {
       data: new Buffer.From(req.file.buffer, 'base64'),
       contentType: req.file.mimetype,
     };
-    const user = await User.findByIdAndUpdate(req.user._id, avatar,
-      { new: true })
-      .orFail();
-    return res.send(user);
+    // const user = await User.findByIdAndUpdate(req.user._id, avatar,
+    //   { new: true })
+    //   .orFail();
+    console.log(req.file.buffer);
+    console.log(req.file.mimetype);
+    return res.send(console.log(req.file.buffer, req.file.mimetype, avatar));
   } catch (err) {
     next(err);
   }
