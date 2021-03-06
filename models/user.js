@@ -16,11 +16,16 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Это обязательное поле'],
   },
   avatar: {
-    type: mongoose.Schema.Types.String,
-    validate: {
-      validator: validator.isURL,
-      message: 'Здесь должна быть ссылка',
-    },
+    data: mongoose.Schema.Types.Buffer,
+    contentType: mongoose.Schema.Types.String,
+    // data: {
+    //   type: mongoose.Schema.Types.Buffer,
+    //   contentType: mongoose.Schema.Types.String,
+    // },
+    // validate: {
+    //   validator: validator.isURL,
+    //   message: 'Здесь должна быть ссылка',
+    // },
     required: [true, 'Это обязательное поле'],
   },
   email: {

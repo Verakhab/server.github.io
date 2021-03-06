@@ -1,3 +1,4 @@
+const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Unauthorized = require('../errors/unauthorized-err');
@@ -6,12 +7,15 @@ const User = require('../models/user');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
+
 // eslint-disable-next-line consistent-return
 const getUsers = async (req, res, next) => {
   try {
     const usersAll = await User.find({})
       .orFail();
-    return res.status(200).send(usersAll);
+    return res.send(usersAll);
   } catch (err) {
     next(err);
   }
@@ -22,7 +26,7 @@ const getUser = async (req, res, next) => {
   try {
     const userId = await User.findById(_id)
       .orFail();
-    res.status(200).send(userId);
+    res.send(userId);
   } catch (err) {
     next(err);
   }
@@ -56,7 +60,7 @@ const upUser = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user._id, { name, about },
       { new: true, runValidators: true })
       .orFail();
-    return res.status(200).send(user);
+    return res.send(user);
   } catch (err) {
     next(err);
   }
@@ -64,16 +68,19 @@ const upUser = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 const upAvatar = async (req, res, next) => {
   try {
-    const { avatar } = req.body;
+    const avatar = {
+      data: new Buffer.From(req.file.buffer, 'base64'),
+      contentType: req.file.mimetype,
+    };
     const user = await User.findByIdAndUpdate(req.user._id, avatar,
-      { new: true, runValidators: true })
+      { new: true })
       .orFail();
-    return res.status(200).send(user);
+    return res.send(user);
   } catch (err) {
     next(err);
   }
 };
-
+// req.body, runValidators: true }
 // eslint-disable-next-line consistent-return
 const login = async (req, res, next) => {
   try {
@@ -97,7 +104,7 @@ const login = async (req, res, next) => {
     const {
       token, _id, name, about, avatar,
     } = userFound;
-    return res.status(200).send({
+    return res.send({
       token,
       _id,
       name,

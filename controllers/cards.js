@@ -12,7 +12,7 @@ const createCard = async (req, res, next) => {
     const { _id } = req.user;
     const { name, link } = req.body;
     const cardNew = await Card.create({ name, link, owner: _id });
-    return res.status(200).send(cardNew);
+    return res.send(cardNew);
   } catch (err) {
     next(err);
   }
@@ -29,7 +29,7 @@ const deleteCard = async (req, res, next) => {
     } else {
       const remCard = await Card.findByIdAndRemove(cardId._id)
         .orFail();
-      return res.status(200).send({ data: remCard });
+      return res.send({ data: remCard });
     }
   } catch (err) {
     next(err);
@@ -43,7 +43,7 @@ const setLike = async (req, res, next) => {
       { $addToSet: { likes: req.user._id } },
       { new: true })
       .orFail();
-    return res.status(200).send(arrLike);
+    return res.send(arrLike);
   } catch (err) {
     next(err);
   }
@@ -56,7 +56,7 @@ const remLike = async (req, res, next) => {
       { $pull: { likes: req.user._id } },
       { new: true })
       .orFail();
-    return res.status(200).send(arrLike);
+    return res.send(arrLike);
   } catch (err) {
     next(err);
   }
