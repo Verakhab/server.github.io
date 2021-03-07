@@ -21,12 +21,12 @@ const app = express();
 // app.use(cors());
 
 const allowedCors = [
-  'http://localhost:8080/',
-  'https://verakhab.github.io/mesto/',
-  'https://mest.ml/',
-  'https://www.mest.ml/',
-  'http://www.localhost:8080/',
-  'https://www.verakhab.github.io/mesto/',
+  'http://localhost:8080',
+  'https://verakhab.github.io/mesto',
+  'https://mest.ml',
+  'https://www.mest.ml',
+  'http://www.localhost:8080',
+  'https://www.verakhab.github.io/mesto',
 ];
 
 app.use((req, res, next) => {
