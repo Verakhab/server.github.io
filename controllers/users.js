@@ -38,13 +38,12 @@ const createUser = async (req, res, next) => {
       contentType: req.file.mimetype,
     };
     const passHash = await bcrypt.hash(password, 10);
-    const userNew = await User.create({
+    let userNew = await User.create({
       name, about, avatar, email, password: passHash,
     });
     if (userNew) {
-      return res.status(201).send({
-        name, about, avatar, email,
-      });
+      userNew = await User.findById(req.user._id).lean().exec();
+      return res.status(201).send(userNew);
     }
   } catch (err) {
     if (err.errors.email && err.errors.email.kind === 'unique') {
@@ -72,12 +71,11 @@ const upAvatar = async (req, res, next) => {
       data: new Buffer.from(req.file.buffer, 'base64'),
       contentType: req.file.mimetype,
     };
-    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
+    let user = await User.findByIdAndUpdate(req.user._id, { avatar },
       { new: true })
       .orFail();
-    const userS = await User.findByIdAndUpdate(req.user._id).lean().exec();
-    const userObj = { user, userS };
-    return res.send(userObj);
+    user = await User.findById(req.user._id).lean().exec();
+    return res.send(user);
   } catch (err) {
     next(err);
   }

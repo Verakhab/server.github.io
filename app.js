@@ -1,7 +1,7 @@
 require('dotenv').config();
 const helmet = require('helmet');
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -18,7 +18,26 @@ const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+
+const allowedCors = [
+  'http://localhost:8080/',
+  'https://verakhab.github.io/mesto/',
+  'https://mest.ml/',
+  'https://www.mest.ml/',
+  'http://www.localhost:8080/',
+  'https://www.verakhab.github.io/mesto/',
+];
+
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  next();
+});
 
 app.set('trust proxy');
 
