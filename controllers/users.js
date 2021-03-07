@@ -31,8 +31,12 @@ const getUser = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     const {
-      name, about, avatar, email, password,
+      name, about, email, password,
     } = req.body;
+    const avatar = {
+      data: new Buffer.from(req.file.buffer, 'base64'),
+      contentType: req.file.mimetype,
+    };
     const passHash = await bcrypt.hash(password, 10);
     const userNew = await User.create({
       name, about, avatar, email, password: passHash,
@@ -65,15 +69,15 @@ const upUser = async (req, res, next) => {
 const upAvatar = async (req, res, next) => {
   try {
     const avatar = {
-      data: new Buffer.From(req.file.buffer, 'base64'),
+      data: new Buffer.from(req.file.buffer, 'base64'),
       contentType: req.file.mimetype,
     };
-    // const user = await User.findByIdAndUpdate(req.user._id, avatar,
-    //   { new: true })
-    //   .orFail();
-    console.log(req.file.buffer);
-    console.log(req.file.mimetype);
-    return res.send(console.log(req.file.buffer, req.file.mimetype, avatar));
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
+      { new: true })
+      .orFail();
+    const userS = await User.findByIdAndUpdate(req.user._id).lean().exec();
+    const userObj = { user, userS };
+    return res.send(userObj);
   } catch (err) {
     next(err);
   }

@@ -22,6 +22,9 @@ app.use(cors());
 
 app.set('trust proxy');
 
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
+
 mongoose.connect(URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -48,22 +51,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-    // eslint-disable-next-line no-useless-escape
-    avatar: Joi.string().regex(/^(http(s)?:\/\/)(w{3}\.)?((\d+\.\d+\.\d+\.\d+)|(([A-Za-z\.-]{2,})\.([A-Za-z]{2,6})))((:\d{2,5})?\/?([\dA-Za-z\/]+#?))?/).required(),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
+app.post('/signin', upload.none(), login);
+
+app.post('/signup', upload.single('link'), createUser);
 
 app.use(auth);
 
@@ -116,3 +106,20 @@ app.listen(PORT || 3000, () => {
   // eslint-disable-next-line no-console
   console.log('Server is running on port 3000');
 });
+// eslint-disable-next-line no-useless-escape
+// Joi.string().regex(/^(http(s)?:\/\/)(w{3}\.)?((\d+\.\d+\.\d+\.\d+)|(([A-Za-z\.-]{2,})\.([A-Za-z]{2,6})))((:\d{2,5})?\/?([\dA-Za-z\/]+#?))?/).required(),
+// celebrate({
+//   body: Joi.object().keys({
+//     name: Joi.string().required().min(2).max(30),
+//     about: Joi.string().required().min(2).max(30),
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// })
+// single('link')
+// celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }),
