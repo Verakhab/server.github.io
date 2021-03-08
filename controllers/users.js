@@ -29,6 +29,8 @@ const getUser = async (req, res, next) => {
 };
 // eslint-disable-next-line consistent-return
 const createUser = async (req, res, next) => {
+  console.log(req.body);
+  console.log(req.file);
   try {
     const {
       name, about, email, password,
@@ -38,11 +40,12 @@ const createUser = async (req, res, next) => {
       contentType: req.file.mimetype,
     };
     const passHash = await bcrypt.hash(password, 10);
-    let userNew = await User.create({
+    const userNew = await User.create({
       name, about, avatar, email, password: passHash,
     });
     if (userNew) {
-      userNew = await User.findById(req.user._id).lean().exec();
+      // const userN = await User.findById(req.user._id).lean().exec();
+      // userN().then((rest) => console.log(rest));
       return res.status(201).send(userNew);
     }
   } catch (err) {
@@ -71,11 +74,11 @@ const upAvatar = async (req, res, next) => {
       data: new Buffer.from(req.file.buffer, 'base64'),
       contentType: req.file.mimetype,
     };
-    let user = await User.findByIdAndUpdate(req.user._id, { avatar },
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar },
       { new: true })
       .orFail();
-    user = await User.findById(req.user._id).lean().exec();
-    return res.send(user);
+    const userS = await User.findById(req.user._id).lean().exec();
+    return res.send(userS);
   } catch (err) {
     next(err);
   }
