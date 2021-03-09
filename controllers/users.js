@@ -77,8 +77,8 @@ const upAvatar = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user._id, { avatar },
       { new: true })
       .orFail();
-    const userS = await User.findById(req.user._id).lean().exec();
-    return res.send(userS);
+    // const userS = await User.findById(req.user._id).lean().exec();
+    return res.send(user);
   } catch (err) {
     next(err);
   }
