@@ -29,8 +29,6 @@ const getUser = async (req, res, next) => {
 };
 // eslint-disable-next-line consistent-return
 const createUser = async (req, res, next) => {
-  console.log(req.body);
-  console.log(req.file);
   try {
     const {
       name, about, email, password,
@@ -44,9 +42,13 @@ const createUser = async (req, res, next) => {
       name, about, avatar, email, password: passHash,
     });
     if (userNew) {
-      // const userN = await User.findById(req.user._id).lean().exec();
-      // userN().then((rest) => console.log(rest));
-      return res.status(201).send(userNew);
+      const ava = userNew.avatar.data.toString('base64');
+      const {
+        _id,
+      } = userNew;
+      return res.status(201).send({
+        _id, name, about, ava, email,
+      });
     }
   } catch (err) {
     if (err.errors.email && err.errors.email.kind === 'unique') {
@@ -77,8 +79,8 @@ const upAvatar = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user._id, { avatar },
       { new: true })
       .orFail();
-    // const userS = await User.findById(req.user._id).lean().exec();
-    return res.send(user);
+    const ava = user.avatar.data.toString('base64');
+    return res.send(ava);
   } catch (err) {
     next(err);
   }
@@ -103,17 +105,19 @@ const login = async (req, res, next) => {
     //   httpOnly: true,
     //   sameSite: true,
     // });
+    const ava = userFound.avatar.data.toString('base64');
     userFound.token = tok;
     const {
-      token, _id, name, about, avatar,
+      token, _id, name, about,
     } = userFound;
-    return res.send({
+    const userBase64 = {
       token,
       _id,
       name,
       about,
-      avatar,
-    });
+      ava,
+    };
+    return res.send({ userBase64 });
   } catch (err) {
     next(err);
   }
