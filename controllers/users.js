@@ -84,7 +84,7 @@ const upAvatar = async (req, res, next) => {
     const userNew = {
       ava,
       type,
-    }
+    };
     return res.send(userNew);
   } catch (err) {
     next(err);
