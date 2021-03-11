@@ -80,7 +80,12 @@ const upAvatar = async (req, res, next) => {
       { new: true })
       .orFail();
     const ava = user.avatar.data.toString('base64');
-    return res.send(ava);
+    const type = user.avatar.contentType;
+    const userNew = {
+      ava,
+      type,
+    }
+    return res.send(userNew);
   } catch (err) {
     next(err);
   }
@@ -106,6 +111,7 @@ const login = async (req, res, next) => {
     //   sameSite: true,
     // });
     const ava = userFound.avatar.data.toString('base64');
+    const type = userFound.avatar.contentType;
     userFound.token = tok;
     const {
       token, _id, name, about,
@@ -116,8 +122,9 @@ const login = async (req, res, next) => {
       name,
       about,
       ava,
+      type,
     };
-    return res.send({ userBase64 });
+    return res.send(userBase64);
   } catch (err) {
     next(err);
   }
