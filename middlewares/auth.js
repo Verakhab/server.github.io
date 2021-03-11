@@ -4,9 +4,13 @@ const Unauthorized = require('../errors/unauthorized-err');
 const { JWT_SECRET, NODE_ENV } = process.env;
 
 module.exports = async (req, res, next) => {
-  const authoriz = req.headers.authorization;
-  if (!authoriz || !authoriz.startsWith('Bearer ')) throw new Unauthorized('Требуется авторизация');
-  const token = authoriz.replace('Bearer ', '');
+  const { authorization } = req.headers.authorization;
+  console.log(authorization);
+  console.log(req.headers);
+  console.log(req.headers.authorization);
+  if (!authorization || !authorization.startsWith('Bearer ')) throw new Unauthorized('Требуется авторизация');
+  const token = authorization.replace('Bearer ', '');
+  console.log(token);
   let payload;
   try {
     payload = await jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
@@ -17,6 +21,6 @@ module.exports = async (req, res, next) => {
     return next(err);
   }
   req.user = payload;
+  console.log(req.user);
   return next();
-  // res.send(req.headers.authorization);
 };
