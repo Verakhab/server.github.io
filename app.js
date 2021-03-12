@@ -32,6 +32,7 @@ const allowedCors = [
 app.use((req, res, next) => {
   const { origin } = req.headers;
 // console.log(req);
+console.log(req.methods);
 console.log(req.headers);
 console.log(origin);
 console.log(allowedCors.includes(origin));
@@ -41,7 +42,7 @@ console.log(allowedCors.includes(origin));
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Credentials', 'true');
   }
-
+  console.log(res);
   next();
 });
 

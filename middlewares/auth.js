@@ -6,7 +6,7 @@ const { JWT_SECRET, NODE_ENV } = process.env;
 module.exports = async (req, res, next) => {
   const authoriz = req.headers.authorization;
   // console.log(authoriz);
-  // console.log(req.headers);
+  console.log(req.headers);
   // console.log(req.headers.authorization);
   if (!authoriz || !authoriz.startsWith('Bearer ')) throw new Unauthorized('Требуется авторизация');
   const token = authoriz.replace('Bearer ', '');
