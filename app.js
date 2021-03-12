@@ -31,9 +31,10 @@ const allowedCors = [
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
-console.log(req);
+// console.log(req);
 console.log(req.headers);
 console.log(origin);
+console.log(allowedCors.includes(origin));
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
