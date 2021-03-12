@@ -1,7 +1,7 @@
 require('dotenv').config();
 const helmet = require('helmet');
 const express = require('express');
-// const cors = require('cors');
+const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -18,33 +18,33 @@ const { PORT = 3000, URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
-// app.use(cors());
+app.use(cors());
 
-const allowedCors = [
-  'http://localhost:8080',
-  'https://verakhab.github.io/mesto',
-  'https://mest.ml',
-  'https://www.mest.ml',
-  'http://www.localhost:8080',
-  'https://www.verakhab.github.io/mesto',
-];
+// const allowedCors = [
+//   'http://localhost:8080',
+//   'https://verakhab.github.io/mesto',
+//   'https://mest.ml',
+//   'https://www.mest.ml',
+//   'http://www.localhost:8080',
+//   'https://www.verakhab.github.io/mesto',
+// ];
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-// console.log(req);
-console.log(req.methods);
-console.log(req.headers);
-console.log(origin);
-console.log(allowedCors.includes(origin));
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, authorization');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Credentials', 'true');
-  }
-  console.log(res.headers);
-  next();
-});
+// app.use((req, res, next) => {
+//   const { origin } = req.headers;
+// // console.log(req);
+// console.log(req.methods);
+// console.log(req.headers);
+// console.log(origin);
+// console.log(allowedCors.includes(origin));
+//   if (allowedCors.includes(origin)) {
+//     res.header('Access-Control-Allow-Origin', origin);
+//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, authorization');
+//     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+//     res.header('Access-Control-Allow-Credentials', 'true');
+//   }
+//   console.log(res.headers);
+//   next();
+// });
 
 app.set('trust proxy');
 
