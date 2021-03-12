@@ -12,12 +12,7 @@ usersRouter.get('/user', getUser);
 
 usersRouter.get('/users', getUsers);
 
-usersRouter.patch('/users/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-  }),
-}), upUser);
+usersRouter.patch('/users/me', upload.none(), upUser);
 
 usersRouter.patch('/users/me/avatar', upload.single('link'), upAvatar);
 
@@ -28,3 +23,8 @@ module.exports = usersRouter;
 //     avatar: Joi.required(),
 //   }),
 // }),
+// celebrate({
+//   body: Joi.object().keys({
+//     name: Joi.string().required().min(2).max(30),
+//     about: Joi.string().required().min(2).max(30),
+//   }),
