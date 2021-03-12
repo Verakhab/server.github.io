@@ -32,7 +32,6 @@ app.use(cors());
 // app.use((req, res, next) => {
 //   const { origin } = req.headers;
 // // console.log(req);
-// console.log(req.methods);
 // console.log(req.headers);
 // console.log(origin);
 // console.log(allowedCors.includes(origin));
@@ -42,7 +41,6 @@ app.use(cors());
 //     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
 //     res.header('Access-Control-Allow-Credentials', 'true');
 //   }
-//   console.log(res.headers);
 //   next();
 // });
 
