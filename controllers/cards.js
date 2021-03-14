@@ -10,8 +10,12 @@ const getCards = (req, res, next) => {
 const createCard = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    const { name, link } = req.body;
-    const cardNew = await Card.create({ name, link, owner: _id });
+    const { name } = req.body;
+    const { image } = {
+      data: new Buffer.from(req.file.buffer, 'base64'),
+      contentType: req.file.mimetype,
+    };
+    const cardNew = await Card.create({ name, image, owner: _id });
     return res.send(cardNew);
   } catch (err) {
     next(err);

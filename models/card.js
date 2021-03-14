@@ -8,13 +8,15 @@ const cardSchema = new mongoose.Schema({
     maxlength: [30, 'Должно быть от 2 до 30 символов'],
     required: [true, 'Это обязательное поле'],
   },
-  link: {
-    type: mongoose.Schema.Types.String,
-    validate: {
-      validator: validator.isURL,
-      message: 'Здесь должна быть ссылка',
-    },
-    required: [true, 'Это обязательное поле'],
+  image: {
+    data: mongoose.Schema.Types.Buffer,
+    contentType: mongoose.Schema.Types.String,
+    // type: mongoose.Schema.Types.String,
+    // validate: {
+    //   validator: validator.isURL,
+    //   message: 'Здесь должна быть ссылка',
+    // },
+    // required: [true, 'Это обязательное поле'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
