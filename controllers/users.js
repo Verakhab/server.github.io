@@ -28,6 +28,7 @@ const getUser = async (req, res, next) => {
   }
 };
 // eslint-disable-next-line consistent-return
+// проверить наличие файла
 const createUser = async (req, res, next) => {
   try {
     const {
@@ -70,6 +71,7 @@ const upUser = async (req, res, next) => {
   }
 };
 // eslint-disable-next-line consistent-return
+// проверить наличие файла
 const upAvatar = async (req, res, next) => {
   try {
     const avatar = {

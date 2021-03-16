@@ -3,7 +3,7 @@ const Forbidden = require('../errors/forbidden-err');
 // eslint-disable-next-line consistent-return
 const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then(cards => res.send({ data: cards }))
     .catch(next);
 };
 // eslint-disable-next-line consistent-return
@@ -11,7 +11,7 @@ const createCard = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { name } = req.body;
-    const { image } = {
+    const image = {
       data: new Buffer.from(req.file.buffer, 'base64'),
       contentType: req.file.mimetype,
     };
