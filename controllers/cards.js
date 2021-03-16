@@ -18,8 +18,9 @@ const createCard = async (req, res, next) => {
     const cardNew = await Card.create({ name, image, owner: _id });
     const cardImage = cardNew.image.data.toString('base64');
     const imageType = cardNew.image.contentType;
+    const idCard = cardNew._id;
     const {
-      createdAt, likes, name, owner, _id
+      createdAt, likes, owner
     } = cardNew;
     const card = {
       cardImage,
@@ -28,7 +29,7 @@ const createCard = async (req, res, next) => {
       likes,
       name,
       owner,
-      _id
+      idCard
     }
     return res.send(card);
   } catch (err) {
