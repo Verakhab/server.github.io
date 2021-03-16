@@ -16,7 +16,21 @@ const createCard = async (req, res, next) => {
       contentType: req.file.mimetype,
     };
     const cardNew = await Card.create({ name, image, owner: _id });
-    return res.send(cardNew);
+    const cardImage = cardNew.image.data.toString('base64');
+    const imageType = cardNew.image.contentType;
+    const {
+      createdAt, likes, name, owner, _id
+    } = cardNew;
+    const card = {
+      cardImage,
+      imageType,
+      createdAt,
+      likes,
+      name,
+      owner,
+      _id
+    }
+    return res.send(card);
   } catch (err) {
     next(err);
   }

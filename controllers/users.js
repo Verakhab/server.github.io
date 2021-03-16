@@ -44,9 +44,7 @@ const createUser = async (req, res, next) => {
     });
     if (userNew) {
       const ava = userNew.avatar.data.toString('base64');
-      const {
-        _id,
-      } = userNew;
+      const { _id } = userNew;
       return res.status(201).send({
         _id, name, about, ava, email,
       });
