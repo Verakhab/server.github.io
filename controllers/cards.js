@@ -1,10 +1,14 @@
 const Card = require('../models/card');
 const Forbidden = require('../errors/forbidden-err');
 // eslint-disable-next-line consistent-return
-const getCards = (req, res, next) => {
-  Card.find({})
-    .then(cards => res.send({ data: cards }))
-    .catch(next);
+const getCards = async (req, res, next) => {
+  try {
+    const cards = await Card.find({})
+      .orFail();
+      return res.send({ data: cards })
+  } catch (err) {
+    next(err);
+  }
 };
 // eslint-disable-next-line consistent-return
 const createCard = async (req, res, next) => {
