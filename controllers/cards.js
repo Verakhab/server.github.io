@@ -7,8 +7,14 @@ const getCards = async (req, res, next) => {
       .orFail();
     const cardsBase64 = cards.map(card => {
       const name = card.name;
-      const image = card.image.data.toString('base64');
-      const imageType = card.image.contentType;
+      let image;
+      let imageType;
+      if (card.image.data && card.image.contentType) {
+        image = card.image.data.toString('base64');
+        imageType = card.image.contentType;
+      }
+      // const image = card.image.data.toString('base64');
+      // const imageType = card.image.contentType;
       const likes = card.likes;
       const owner = card.owner;
       const createdAt = card.createdAt;
