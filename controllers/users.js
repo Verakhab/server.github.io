@@ -11,7 +11,18 @@ const getUsers = async (req, res, next) => {
   try {
     const usersAll = await User.find({})
       .orFail();
-    return res.send(usersAll);
+    const userBase64 = usersAll.map(user => {
+      const name = user.name;
+      const about = user.about;
+      const avatar = user.avatar.data.toString('base64');
+      const avatarType = user.avatar.contentType;
+      const email = user.email;
+      const _id = user._id;
+      return {
+        name, about, avatar, avatarType, email, _id
+      };
+    });
+    return res.send(userBase64);
   } catch (err) {
     next(err);
   }
@@ -22,7 +33,14 @@ const getUser = async (req, res, next) => {
   try {
     const userId = await User.findById(_id)
       .orFail();
-    res.send(userId);
+    const avatar = userId.avatar.data.toString('base64');
+    const avatarType = userId.avatar.contentType;
+    const {
+      name, about, email
+    } = userId;
+    return res.send({
+      name, about, avatar, avatarType, email, _id
+    });
   } catch (err) {
     next(err);
   }
@@ -63,7 +81,14 @@ const upUser = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user._id, { name, about },
       { new: true, runValidators: true })
       .orFail();
-    return res.send(user);
+    const avatar = user.avatar.data.toString('base64');
+    const avatarType = user.avatar.contentType;
+    const {
+      email, _id
+    } = user
+    return res.send({
+      name, about, avatar, avatarType, email, _id
+    });
   } catch (err) {
     next(err);
   }
@@ -80,10 +105,10 @@ const upAvatar = async (req, res, next) => {
       { new: true })
       .orFail();
     const ava = user.avatar.data.toString('base64');
-    const type = user.avatar.contentType;
+    const avatarType = user.avatar.contentType;
     const userNew = {
       ava,
-      type,
+      avatarType,
     };
     return res.send(userNew);
   } catch (err) {
@@ -111,7 +136,7 @@ const login = async (req, res, next) => {
     //   sameSite: true,
     // });
     const ava = userFound.avatar.data.toString('base64');
-    const type = userFound.avatar.contentType;
+    const avatarType = userFound.avatar.contentType;
     userFound.token = tok;
     const {
       token, _id, name, about,
@@ -122,7 +147,7 @@ const login = async (req, res, next) => {
       name,
       about,
       ava,
-      type,
+      avatarType,
     };
     return res.send(userBase64);
   } catch (err) {

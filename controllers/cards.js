@@ -5,7 +5,19 @@ const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({})
       .orFail();
-      return res.send({ data: cards })
+    const cardsBase64 = cards.map(card => {
+      const name = card.name;
+      const image = card.image.data.toString('base64');
+      const imageType = card.image.contentType;
+      const likes = card.likes;
+      const owner = card.owner;
+      const createdAt = card.createdAt;
+      const _id = card._id;
+      return {
+        name, image, imageType, likes, owner, createdAt, _id
+      };
+    });
+      return res.send(cardsBase64)
   } catch (err) {
     next(err);
   }
@@ -20,20 +32,14 @@ const createCard = async (req, res, next) => {
       contentType: req.file.mimetype,
     };
     const cardNew = await Card.create({ name, image, owner: _id });
-    const cardImage = cardNew.image.data.toString('base64');
+    const imageCard = cardNew.image.data.toString('base64');
     const imageType = cardNew.image.contentType;
     const idCard = cardNew._id;
     const {
       createdAt, likes, owner
     } = cardNew;
     const card = {
-      cardImage,
-      imageType,
-      createdAt,
-      likes,
-      name,
-      owner,
-      idCard
+      name, imageCard, imageType, likes, owner, createdAt, idCard
     }
     return res.send(card);
   } catch (err) {
@@ -52,7 +58,7 @@ const deleteCard = async (req, res, next) => {
     } else {
       const remCard = await Card.findByIdAndRemove(cardId._id)
         .orFail();
-      return res.send({ data: remCard });
+      return res.send(remCard);
     }
   } catch (err) {
     next(err);
